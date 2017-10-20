@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+spec:
+  type: NodePort
+  ports:
+  - port: 9200
+    nodePort: 30001
+    name: port01
+    protocol: TCP
+  - port: 9300
+    nodePort: 30002
+    name: port02
+    protocol: TCP
+  selector:
+    app: elasticsearch
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - image: wellnr/elasticsearch
+        imagePullPolicy: IfNotPresent
+        name: elasticsearch
+        ports:
+        - containerPort: 9200
+          name: port01
+        - containerPort: 9300
+          name: port02

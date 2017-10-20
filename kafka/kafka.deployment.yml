@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+spec:
+  ports:
+  - port: 2181
+    name: port01
+    protocol: TCP
+  selector:
+    app: zookeeper
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+spec:
+  ports:
+  - port: 9092
+    name: port01
+    protocol: TCP
+  selector:
+    app: kafka
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-client
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 30080
+    name: port01
+    protocol: TCP
+  selector:
+    app: kafka-client
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: zookeeper
+spec:
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+      - image: wellnr/zookeeper
+        imagePullPolicy: IfNotPresent
+        name: zookeeper
+        ports:
+        - containerPort: 2181
+          name: port01
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: kafka
+spec:
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      hostname: kafka
+      containers:
+      - image: wellnr/kafka
+        imagePullPolicy: IfNotPresent
+        name: kafka
+        ports:
+        - containerPort: 9092
+          name: port01
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: kafka-client
+spec:
+  template:
+    metadata:
+      labels:
+        app: kafka-client
+    spec:
+      containers:
+      - image: wellnr/kafka-client
+        imagePullPolicy: IfNotPresent
+        name: kafka-client
+        ports:
+        - containerPort: 8080
+          name: port01

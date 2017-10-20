@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark
+spec:
+  type: NodePort
+  ports:
+  - port: 7077
+    name: port01
+    protocol: TCP
+  - port: 8080
+    nodePort: 30080
+    name: port02
+    protocol: TCP
+  - port:  6066
+    nodePort: 30066
+    name: port03
+    protocol: TCP
+  selector:
+    app: spark-master-node
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: spark-master-node
+spec:
+  template:
+    metadata:
+      labels:
+        app: spark-master-node
+    spec:
+      containers:
+      - image: wellnr/spark-master
+        imagePullPolicy: IfNotPresent
+        name: spark-master-node
+        ports:
+        - containerPort: 7077
+          name: port01
+        - containerPort: 8080
+          name: port02
+        - containerPort: 6066
+          name: port03
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: spark-slave-node
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: spark-slave-node
+    spec:
+      containers:
+      - image: wellnr/spark-slave
+        imagePullPolicy: IfNotPresent
+        name: spark-slave-node
+        ports:
+        - containerPort: 8081
+          name: port01
+        - containerPort: 6066
+          name: port02
