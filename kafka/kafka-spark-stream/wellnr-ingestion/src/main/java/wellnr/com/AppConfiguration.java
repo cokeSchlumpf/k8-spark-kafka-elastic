@@ -1,9 +1,11 @@
 package wellnr.com;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigValue;
 import org.apache.commons.collections.ListUtils;
 
 import java.util.Map;
@@ -14,7 +16,16 @@ import java.util.Set;
  */
 public class AppConfiguration {
 
-    final Config conf = ConfigFactory.load();
+    final Config conf;
+
+    {
+        conf = ConfigFactory.load();
+        for (Map.Entry<String, ConfigValue> entry : conf.entrySet()) {
+            if (entry.getKey().startsWith("kafka")) {
+                System.out.println(entry.getKey() + ":" + entry.getValue());
+            }
+        };
+    }
 
     public Set<String> kafka$getBrokers() {
         return Sets.newHashSet(conf.getStringList("kafka.brokers"));

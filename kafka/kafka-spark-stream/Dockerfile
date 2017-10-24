@@ -11,4 +11,5 @@ RUN cd /opt/wellnr-ingestion \
 CMD [ \
   "/opt/spark/bin/spark-submit", \
   "--master", "spark://spark:7077", \
+  "--conf", "spark.executor.extraJavaOptions=-Dkafka.broker.0=kafka:9092", \
   "/opt/wellnr-ingestion/target/wellnr-ingestion-1.0-SNAPSHOT.jar" ]
