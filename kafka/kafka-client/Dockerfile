@@ -1,6 +1,15 @@
-FROM java:8
+FROM openjdk:8
 
-ADD wellnr-crawler-1.0-SNAPSHOT.jar crawler.yml /opt/
+RUN apt-get update -y \
+  &&  apt-get install -y maven
 
-WORKDIR /opt/
+ADD wellnr-crawler /opt/wellnr-crawler
+ADD crawler.yml /opt/
+
+RUN cd /opt/wellnr-crawler \
+  && mvn package \
+  && mv target/wellnr-crawler-1.0-SNAPSHOT.jar /opt/
+
+EXPOSE 8080
+WORKDIR /opt
 CMD [ "java", "-jar", "wellnr-crawler-1.0-SNAPSHOT.jar", "server", "crawler.yml" ]

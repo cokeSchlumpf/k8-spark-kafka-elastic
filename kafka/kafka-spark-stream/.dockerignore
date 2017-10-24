@@ -1,0 +1,4 @@
+wellnr-ingestion/target
+wellnr-ingestion/.idea
+wellnr-ingestion/wellnr-crawler.iml
+wellnr-ingestion/dependency-reduced-pom.xml

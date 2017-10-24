@@ -30,7 +30,7 @@ spec:
   type: NodePort
   ports:
   - port: 8080
-    nodePort: 30080
+    nodePort: 30180
     name: port01
     protocol: TCP
   selector:
@@ -90,3 +90,18 @@ spec:
         ports:
         - containerPort: 8080
           name: port01
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: kafka-spark-stream
+spec:
+  template:
+    metadata:
+      labels:
+        app: kafka-spark-stream
+    spec:
+      containers:
+      - image: wellnr/kafka-spark-stream
+        imagePullPolicy: IfNotPresent
+        name: kafka-spark-stream
